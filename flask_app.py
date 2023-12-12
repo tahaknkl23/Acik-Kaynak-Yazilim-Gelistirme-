@@ -2,8 +2,10 @@ from flask import Flask, request
 from flask_restful import Api, Resource
 import pandas as pd
 
-app = Flask(__name__)
+
+app = Flask(_name_)
 api = Api(app)
+
 
 class Users(Resource):
     def get(self):
@@ -12,16 +14,19 @@ class Users(Resource):
         return {'data' : data}, 200
 
     def post(self):
-        json = request.get_json()
+        json = request.args["name"]
+        json = request.args["age"]
+        json = request.args["city"]
         req_data = pd.DataFrame({
-            'name'      : [json['name']],
-            'age'       : [json['age']],
-            'city'      : [json['city']]
+            'name'      : ['name'],
+            'age'       : ['age'],
+            'city'      : ['city']
         })
         data = pd.read_csv('users.csv')
-        data = pd.concat([data, req_data], ignore_index=True)
-        data.to_csv('users.csv', index=False)
-        return {'message' : 'Record successfully added.'}, 200
+        #data = pd.concat([data, req_data], ignore_index=True)
+        data = data.append(req_data, ignore_index=True)
+        data.to_csv('kullanici.csv', index=False)
+        return {'message' : 'Record successfully added.'}, 201
 
     def delete(self):
         name = request.args['name']
@@ -56,6 +61,6 @@ api.add_resource(Cities, '/cities')
 api.add_resource(Name, '/<string:name>')
 
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     # app.run(host="0.0.0.0", port=5000)
     app.run()
